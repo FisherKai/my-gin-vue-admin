@@ -20,3 +20,10 @@ type GeneralDB struct {
 	LogMode      string `mapstructure:"log-mode" json:"log-mode" yaml:"log-mode"`                   // 是否开启Gorm全局日志
 	LogZap       bool   `mapstructure:"log-zap" json:"log-zap" yaml:"log-zap"`                      // 是否通过zap写入日志文件
 }
+
+type SpecializedDB struct {
+	Disable   bool   `mapstructure:"disable" json:"disable" yaml:"disable"`
+	Type      string `mapstructure:"type" json:"type" yaml:"type"`
+	AliasName string `mapstructure:"alias-name" json:"alias-name" yaml:"alias-name"`
+	GeneralDB `yaml:",inline" mapstructure:",squash"`
+}
