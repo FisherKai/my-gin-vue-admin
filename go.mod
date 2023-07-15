@@ -3,13 +3,15 @@ module demo-gin-1
 go 1.19
 
 require (
+	github.com/flipped-aurora/gin-vue-admin/server v0.0.0-20230714132312-b94bc5f0920f
 	github.com/gin-gonic/gin v1.9.1
 	github.com/go-sql-driver/mysql v1.7.1
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/songzhibin97/gkit v1.2.11
 	github.com/spf13/viper v1.16.0
 	go.uber.org/zap v1.24.0
-	golang.org/x/sync v0.1.0
+	golang.org/x/sync v0.2.0
+	gorm.io/driver/mysql v1.5.1
 	gorm.io/gorm v1.25.2
 )
 

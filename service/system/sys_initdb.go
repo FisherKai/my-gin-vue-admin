@@ -2,9 +2,11 @@ package system
 
 import (
 	"context"
+	"database/sql"
 	"demo-gin-1/global"
 	"demo-gin-1/model/system/request"
 	"errors"
+	"fmt"
 	"gorm.io/gorm"
 	"sort"
 )
@@ -107,4 +109,39 @@ func (initDBService *InitDBService) InitDB(conf request.InitDB) (err error) {
 	initializers = initSlice{}
 	cache = map[string]*orderedInitializer{}
 	return nil
+}
+
+func createTables(ctx context.Context, inits initSlice) error {
+	next, cancel := context.WithCancel(ctx)
+	defer func(c func()) { c() }(cancel)
+	for _, init := range inits {
+		if init.TableCreated(next) {
+			continue
+		}
+		if n, err := init.MigrateTable(next); err != nil {
+			return err
+		} else {
+			next = n
+		}
+	}
+	return nil
+}
+
+// 创建数据库 （EnsureDB中调用）
+func createDatabase(dsn string, driver string, createSql string) error {
+	db, err := sql.Open(driver, dsn)
+	if err != nil {
+		return err
+	}
+	defer func(db *sql.DB) {
+		err = db.Close()
+		if err != nil {
+			fmt.Println(err)
+		}
+	}(db)
+	if err = db.Ping(); err != nil {
+		return err
+	}
+	_, err = db.Exec(createSql)
+	return err
 }
